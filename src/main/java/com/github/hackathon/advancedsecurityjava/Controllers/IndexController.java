@@ -39,10 +39,14 @@ public class IndexController {
 
       if (bookname != null) {
         // Filter by book name
-        query = "SELECT * FROM Books WHERE name LIKE '%" + bookname + "%'";
+        query = "SELECT * FROM Books WHERE name LIKE '%?%'";
+        PreparedStatement stmt = connecton.prepareStatement(query);
+        stmt.setString( 1, bookname);
       } else if (bookauthor != null) {
         // Filter by book author
-        query = "SELECT * FROM Books WHERE author LIKE '%" + bookauthor + "%'";
+        query = "SELECT * FROM Books WHERE author LIKE '%?%'";
+        PreparedStatement stmt = connecton.prepareStatement(query);
+        stmt.setString( 1, bookauthor);
       } else if (bookread != null) {
         // Filter by if the book has been read or not
         Integer read = bookread ? 1 : 0;
@@ -52,7 +56,7 @@ public class IndexController {
         query = "SELECT * FROM Books";
       }
 
-      ResultSet results = statement.executeQuery(query);
+      ResultSet results = stmt.executeQuery();
 
       while (results.next()) {
         Book book = new Book(results.getString("name"), results.getString("author"), (results.getInt("read") == 1));
